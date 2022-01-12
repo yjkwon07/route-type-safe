@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "description": "route type safe for page location with pathname, query, hash, state",
   "keywords": [
-    "typesafe",
-    "type-safe",
     "route",
-    "router",
-    "react"
+    "type-safe",
+    "page parse"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,9 +1,6 @@
-/.storybook
 /.vscode
 
 node_modules
 
 dist
 build
-
-craco.config.js
