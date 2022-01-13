@@ -5,11 +5,12 @@
   "keywords": [
     "route",
     "type-safe",
-    "page parse"
+    "url parse"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist",
     "test": "test"
   },
   "repository": {
@@ -27,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
     "conditional-type-checks": "^1.0.5",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",

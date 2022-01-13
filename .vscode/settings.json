@@ -41,6 +41,7 @@
     "source.fixAll.eslint": true
   },
   "cSpell.words": [
+    "copyfiles",
     "Kwon",
     "typesafe"
   ],
