@@ -11,7 +11,29 @@ export const optionalTypeTransformer = <T, S>(transformer: (value: S) => T) => {
   };
 };
 
-export const urlParamReplace = (url: string, param: Record<string, string>) => {
+type ConvertToString<T> = {
+  [P in keyof T]: T[P] extends string | number | boolean | Date[] ? string[] : string;
+};
+
+export const convertToString = <T>(obj: T): ConvertToString<T> => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value) {
+      if (Array.isArray(value)) {
+        acc[key] = value.map((v) => {
+          if (v instanceof Date) {
+            return v.getTime().toString();
+          }
+          return v.toString();
+        });
+      } else if (value instanceof Date) {
+        acc[key] = value.getTime().toString();
+      } else acc[key] = value.toString();
+    }
+    return acc;
+  }, {} as any);
+};
+
+export const urlParamReplace = (url: string, param: Record<string, any>) => {
   let replaceUrl = url;
   Object.entries(param).forEach(([key, value]) => {
     const targetReplace = `:${key}`;
