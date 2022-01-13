@@ -11,6 +11,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist",
+    "build": "rimraf dist && npm run copy-dts && tsc --project tsconfig.build.json",
+    "eslint:fix": "npx eslint --fix ./src/**",
     "test": "test"
   },
   "repository": {
@@ -36,6 +38,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.5.4"
   }
 }
