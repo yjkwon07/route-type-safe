@@ -19,8 +19,8 @@ it('[convertToString func.] All value convert to string type', () => {
     d: ['1', '2'],
     e: ['true', 'false'],
     f: ['true', '2'],
-    g: '1583107200000',
-    h: ['1583107200000'],
+    g: '2022-03-01T00:00:00.000Z',
+    h: ['2022-03-01T00:00:00.000Z'],
   });
 });
 

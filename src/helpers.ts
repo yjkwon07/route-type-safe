@@ -21,12 +21,12 @@ export const convertToString = <T>(obj: T): ConvertToString<T> => {
       if (Array.isArray(value)) {
         acc[key] = value.map((v) => {
           if (v instanceof Date) {
-            return v.getTime().toString();
+            return v.toJSON();
           }
           return v.toString();
         });
       } else if (value instanceof Date) {
-        acc[key] = value.getTime().toString();
+        acc[key] = value.toJSON();
       } else acc[key] = value.toString();
     }
     return acc;
