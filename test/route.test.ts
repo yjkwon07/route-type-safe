@@ -215,6 +215,57 @@ it('[build func.] encode(param, query) no encode state (only object value)', () 
   });
 });
 
+it('[parse func.] decode(param, query) no decode state (only object value)', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.string.required,
+    },
+    typeQuery: {
+      sort: typeParser.oneOf("가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\", 'L').optional,
+    },
+    typeHash: ['#ss'],
+    typeState: {
+      a: typeParser.arrayOf(transformer.string).required,
+    },
+  });
+
+  expect(
+    product.parseParam({
+      id: '%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+    }),
+  ).toEqual({
+    id: "가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\",
+  });
+  expect(
+    product.parseQuery({
+      sort: '%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+    }),
+  ).toEqual({
+    sort: "가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\",
+  });
+  expect(
+    product.parseState({
+      state: { a: ["가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\"] },
+    }),
+  ).toEqual({
+    a: ["가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\"],
+  });
+  expect(
+    product.parseState({
+      state: {
+        a: [
+          '%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+        ],
+      },
+    }),
+  ).toEqual({
+    a: [
+      '%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+    ],
+  });
+});
+
 it('[parse func.] string type convert to transformer(func.) return type', () => {
   const product = route({
     path: '/id/:id',
