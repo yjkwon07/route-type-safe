@@ -36,12 +36,12 @@ export const convertToString = <T>(obj: T, option?: { encode: boolean }): Conver
       if (Array.isArray(value)) {
         acc[key] = value.map((v) => {
           if (v instanceof Date) {
-            return v.toJSON();
+            return v.toString() === 'Invalid Date' ? v.toString() : encode(v.toJSON(), option?.encode);
           }
           return encode(v.toString(), option?.encode);
         });
       } else if (value instanceof Date) {
-        acc[key] = value.toJSON();
+        acc[key] = value.toString() === 'Invalid Date' ? value.toString() : encode(value.toJSON(), option?.encode);
       } else acc[key] = encode(value.toString(), option?.encode);
     }
     return acc;

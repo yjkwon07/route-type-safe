@@ -8,8 +8,8 @@ it('[convertToString func.] All value convert to string type', () => {
     d: ['1', '2'],
     e: [true, false],
     f: [true, '2'],
-    g: new Date('2020-03-02'),
-    h: [new Date('2020-03-02')],
+    g: new Date('2022-03-01'),
+    h: [new Date('2022-03-01')],
   };
 
   expect(convertToString(useType)).toEqual({
@@ -26,12 +26,12 @@ it('[convertToString func.] All value convert to string type', () => {
 
 it('[convertToString func.] Date NaN => Invalid Date', () => {
   const useType = {
-    a: new Date('NaN2020-03-02'),
+    a: new Date('NaN2020aaa-03-02'),
   };
   const dateParse = new Date(convertToString(useType).a);
 
   expect(convertToString(useType)).toEqual({
-    a: 'NaN',
+    a: 'Invalid Date',
   });
   expect(dateParse.getTime()).toEqual(NaN);
   expect(dateParse.toString()).toEqual('Invalid Date');
