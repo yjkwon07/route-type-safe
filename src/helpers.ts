@@ -11,11 +11,19 @@ export const optionalTypeTransformer = <T, S>(transformer: (value: S) => T) => {
   };
 };
 
+export const encode = (v: string, isEncode = false) => {
+  if (isEncode) {
+    // '*' escape except that same to return URLSearchParams func.
+    return encodeURIComponent(v).replace(/[!'()]/g, (x) => `%${x.charCodeAt(0).toString(16).toUpperCase()}`);
+  }
+  return v;
+};
+
 type ConvertToString<T> = {
   [P in keyof T]: T[P] extends string | number | boolean | Date[] ? string[] : string;
 };
 
-export const convertToString = <T>(obj: T): ConvertToString<T> => {
+export const convertToString = <T>(obj: T, option?: { encode: boolean }): ConvertToString<T> => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (value) {
       if (Array.isArray(value)) {
@@ -23,11 +31,11 @@ export const convertToString = <T>(obj: T): ConvertToString<T> => {
           if (v instanceof Date) {
             return v.toJSON();
           }
-          return v.toString();
+          return encode(v.toString(), option?.encode);
         });
       } else if (value instanceof Date) {
         acc[key] = value.toJSON();
-      } else acc[key] = value.toString();
+      } else acc[key] = encode(value.toString(), option?.encode);
     }
     return acc;
   }, {} as any);
