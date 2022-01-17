@@ -19,6 +19,13 @@ export const encode = (v: string, isEncode = false) => {
   return v;
 };
 
+export const decode = (v: string, isDecode = false) => {
+  if (isDecode) {
+    return decodeURIComponent(v);
+  }
+  return v;
+};
+
 type ConvertToString<T> = {
   [P in keyof T]: T[P] extends string | number | boolean | Date[] ? string[] : string;
 };
@@ -36,6 +43,22 @@ export const convertToString = <T>(obj: T, option?: { encode: boolean }): Conver
       } else if (value instanceof Date) {
         acc[key] = value.toJSON();
       } else acc[key] = encode(value.toString(), option?.encode);
+    }
+    return acc;
+  }, {} as any);
+};
+
+export const convertToDecodeString = (
+  obj: Record<string, string[] | string | undefined>,
+  option?: { decode: boolean },
+): Record<string, string[] | string | undefined> => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value) {
+      if (Array.isArray(value)) {
+        acc[key] = value.map((v) => {
+          return decode(v.toString(), option?.decode);
+        });
+      } else acc[key] = decode(value.toString(), option?.decode);
     }
     return acc;
   }, {} as any);

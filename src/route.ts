@@ -1,4 +1,4 @@
-import { convertToString, urlQueryReplace, urlParamReplace } from './helpers';
+import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace } from './helpers';
 
 type UseType = string | number | boolean | Date;
 
@@ -49,12 +49,13 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   typeState?: TypeTransformerParser<ParseState>;
 }) {
   function parseParam(
-    param: Record<string, string>,
+    param: Record<string, string | undefined>,
   ): ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] } {
+    const decodeParam = convertToDecodeString(param);
     const keyList = (typeParam && Object.keys(typeParam)) || [];
 
     return keyList.reduce((acc, key) => {
-      acc[key] = param[key] && typeParam && typeParam[key as keyof ParseParam]?.transformer(param[key]);
+      acc[key] = decodeParam[key] && typeParam && typeParam[key as keyof ParseParam]?.transformer(decodeParam[key]);
       return acc;
     }, {} as any);
   }
@@ -62,10 +63,11 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   function parseQuery(
     query: Record<string, string | string[] | undefined>,
   ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] } {
+    const decodeQuery = convertToDecodeString(query);
     const keyList = (typeQuery && Object.keys(typeQuery)) || [];
 
     return keyList.reduce((acc, key) => {
-      acc[key] = query[key] && typeQuery && typeQuery[key as keyof ParseQuery]?.transformer(query[key]);
+      acc[key] = decodeQuery[key] && typeQuery && typeQuery[key as keyof ParseQuery]?.transformer(decodeQuery[key]);
       return acc;
     }, {} as any);
   }
