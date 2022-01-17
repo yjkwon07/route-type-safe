@@ -73,6 +73,46 @@ it('[build func.] typeParser optional, required type check', () => {
   });
 });
 
+it('[parse func.] string type convert to transformer(func.) return type', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.number.required,
+    },
+    typeQuery: {
+      sort: typeParser.oneOf('L', 'R').optional,
+      page: typeParser.number.required,
+    },
+    typeState: {
+      a: typeParser.number.required,
+      b: typeParser.string.required,
+      c: typeParser.boolean.required,
+      d: typeParser.date.required,
+      e: typeParser.oneOf('id', 'sort').required,
+      f: typeParser.arrayOf(transformer.number).required,
+    },
+  });
+  const date = new Date('2022/01/13');
+
+  expect(product.parseParam({ id: '2' })).toEqual({ id: 2 });
+  expect(() => product.parseParam({ id: 'apple' })).toThrow();
+  expect(product.parseParam({ productId: '2' })).toEqual({});
+
+  expect(product.parseQuery({ page: '3' })).toEqual({ page: 3 });
+  expect(product.parseQuery({ sort: 'L', page: '3' })).toEqual({ sort: 'L', page: 3 });
+  expect(product.parseQuery({ isSort: 'true', isPage: 'false' })).toEqual({});
+  expect(() => product.parseQuery({ sort: '2', page: '3' })).toThrow();
+
+  expect(product.parseState({ state: { a: '1', b: '2', c: 'true', d: date, e: 'id', f: ['1', '23'] } })).toEqual({
+    a: 1,
+    b: '2',
+    c: true,
+    d: date,
+    e: 'id',
+    f: [1, 23],
+  });
+});
+
 it('[build func.] oneOf union type check', () => {
   const product = route({
     path: '/id',
@@ -86,6 +126,23 @@ it('[build func.] oneOf union type check', () => {
     search: '?sort=L',
     hash: undefined,
     state: null,
+  });
+});
+
+it('[parse func.] oneOf is orderable, 1, "1"(string) => url("1") => 1(number)', () => {
+  const product = route({
+    path: '/id',
+    typeQuery: {
+      stringAndNumber: typeParser.oneOf('1', 1).optional,
+      numberAndString: typeParser.oneOf(1, '1').optional,
+    },
+  });
+
+  expect(product.parseQuery({ stringAndNumber: '1' })).toEqual({
+    stringAndNumber: '1',
+  });
+  expect(product.parseQuery({ numberAndString: '1' })).toEqual({
+    numberAndString: 1,
   });
 });
 
@@ -126,20 +183,35 @@ it('[build func.] arrayOf return build value check, that using urlQueryReplace f
   });
 });
 
-it('[parse func.] oneOf is orderable, 1, "1"(string) => url("1") => 1(number) ', () => {
+it('[build func.] encode(param, query) no encode state (only object value)', () => {
   const product = route({
-    path: '/id',
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.string.required,
+    },
     typeQuery: {
-      stringAndNumber: typeParser.oneOf('1', 1).optional,
-      numberAndString: typeParser.oneOf(1, '1').optional,
+      sort: typeParser.oneOf("가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\", 'L').optional,
+    },
+    typeHash: ['#ss'],
+    typeState: {
+      a: typeParser.arrayOf(transformer.string).required,
     },
   });
 
-  expect(product.parseQuery({ stringAndNumber: '1' })).toEqual({
-    stringAndNumber: '1',
-  });
-  expect(product.parseQuery({ numberAndString: '1' })).toEqual({
-    numberAndString: 1,
+  expect(
+    product.build({
+      param: { id: "가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\" },
+      query: { sort: "가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\" },
+      hash: '#ss',
+      state: { a: ["가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\"] },
+    }),
+  ).toEqual({
+    pathname:
+      '/id/%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+    search:
+      '?sort=%EA%B0%80%EB%82%98%EB%8B%A4%EB%9D%BC%EB%A7%88%EB%B0%94%EC%82%AC%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%3B%27%2C.%2F%60%3D%3F%3C%3E%3A%7B%7D%7C%5C',
+    hash: '#ss',
+    state: { a: ["가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\"] },
   });
 });
 
