@@ -1,4 +1,4 @@
-import { convertToString } from './helpers';
+import { convertToString } from '../src/helpers';
 
 it('[convertToString func.] All value convert to string type', () => {
   const useType = {

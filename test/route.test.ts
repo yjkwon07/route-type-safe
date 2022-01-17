@@ -1,7 +1,7 @@
-import { convertToString } from './helpers';
-import { route } from './route';
-import transformer from './transformer';
-import typeParser from './typeParser';
+import { convertToString } from '../src/helpers';
+import { route } from '../src/route';
+import transformer from '../src/transformer';
+import typeParser from '../src/typeParser';
 
 it('[build func.] If typeParam is not equal ":{w+}" (like ":param") pattern with path, return pathname to path', () => {
   const wrongProductId = route({
