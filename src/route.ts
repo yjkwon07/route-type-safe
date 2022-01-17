@@ -51,7 +51,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   function parseParam(
     param: Record<string, string | undefined>,
   ): ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] } {
-    const decodeParam = convertToDecodeString(param);
+    const decodeParam = convertToDecodeString(param, { decode: true });
     const keyList = (typeParam && Object.keys(typeParam)) || [];
 
     return keyList.reduce((acc, key) => {
@@ -63,7 +63,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   function parseQuery(
     query: Record<string, string | string[] | undefined>,
   ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] } {
-    const decodeQuery = convertToDecodeString(query);
+    const decodeQuery = convertToDecodeString(query, { decode: true });
     const keyList = (typeQuery && Object.keys(typeQuery)) || [];
 
     return keyList.reduce((acc, key) => {
