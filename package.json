@@ -14,7 +14,9 @@
     "build": "rimraf dist && npm run copy-dts && tsc --project tsconfig.build.json",
     "eslint:fix": "npx eslint --fix ./src/**",
     "test": "jest",
-    "test:watch": "jest --clearCache && jest --watchAll"
+    "test:watch": "jest --clearCache && jest --watchAll",
+    "prepack": "npm run build",
+    "prepublish": "npm run test"
   },
   "repository": {
     "type": "git",
