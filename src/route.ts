@@ -1,5 +1,6 @@
 import { Location } from 'history';
 
+import { SubPartial } from './global';
 import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace } from './helpers';
 
 type UseType = string | number | boolean | Date;
