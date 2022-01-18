@@ -22,7 +22,7 @@
     "outDir": "./dist"
   },
   "include": [
-    "src",
+    "src", "test/**/*",
   ],
   "typeRoots": [
     "node_modules/@types",

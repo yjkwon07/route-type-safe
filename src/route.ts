@@ -1,5 +1,6 @@
 import { Location } from 'history';
 
+import { SubPartial } from './global';
 import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace } from './helpers';
 
 type UseType = string | number | boolean | Date;
@@ -103,6 +104,15 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     query: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
     hash: [...Hash][number];
     state: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
+  };
+  function parse(
+    param: Record<string, string | undefined>,
+    location?: Location,
+  ): {
+    param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
+    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    hash?: [...Hash][number];
+    state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   };
   function parse(
     param: Record<string, string | undefined>,
