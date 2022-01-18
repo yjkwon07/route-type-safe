@@ -306,6 +306,51 @@ it('[parse func.] string type convert to transformer(func.) return type', () => 
   });
 });
 
+it('[parse func.] using parse func.', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.number.required,
+    },
+    typeQuery: {
+      sort: typeParser.oneOf('L', 'R').optional,
+      page: typeParser.number.required,
+    },
+    typeHash: ['#ss'],
+    typeState: {
+      a: typeParser.number.required,
+      b: typeParser.string.required,
+      c: typeParser.boolean.required,
+      d: typeParser.date.required,
+      e: typeParser.oneOf('id', 'sort').required,
+      f: typeParser.arrayOf(transformer.number).required,
+    },
+  });
+  const date = new Date('2022/01/13');
+
+  expect(
+    product.parse(
+      { id: '2' },
+      {
+        pathname: '/id/2',
+        search: '?sort=L&page=3',
+        hash: '#ss',
+        state: { a: '1', b: '2', c: 'true', d: date, e: 'id', f: ['1', '23'] },
+      },
+    ),
+  ).toEqual({
+    param: {
+      id: 2,
+    },
+    query: {
+      page: 3,
+      sort: 'L',
+    },
+    hash: '#ss',
+    state: { a: 1, b: '2', c: true, d: date, e: 'id', f: [1, 23] },
+  });
+});
+
 it('[parse func.] string type convert to Date type', () => {
   const product = route({
     path: '/id',

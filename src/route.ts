@@ -1,3 +1,5 @@
+import { Location } from 'history';
+
 import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace } from './helpers';
 
 type UseType = string | number | boolean | Date;
@@ -90,6 +92,38 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     }, {} as any);
   }
 
+  function parse(param: Record<string, string | undefined>): {
+    param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
+  };
+  function parse(
+    param: Record<string, string | undefined>,
+    location: Location,
+  ): {
+    param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
+    query: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    hash: [...Hash][number];
+    state: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
+  };
+  function parse(
+    param: Record<string, string | undefined>,
+    location?: Location,
+  ): {
+    param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
+    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    hash?: [...Hash][number];
+    state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
+  } {
+    const searchParams = urlQueryReplace(location?.search);
+    const query = Object.fromEntries([...searchParams]);
+
+    return {
+      param: parseParam(param),
+      query: location && parseQuery(query),
+      hash: location && parseHash(location),
+      state: location && parseState(location),
+    };
+  }
+
   return {
     path,
     build: build<
@@ -98,6 +132,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
       [...Hash][number],
       NotNullReturn<ParseState, TypeParserReturn<TypeParser<ParseState>>>
     >(path),
+    parse,
     parseParam,
     parseQuery,
     parseHash,
