@@ -113,6 +113,15 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
     hash?: [...Hash][number];
     state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
+  };
+  function parse(
+    param: Record<string, string | undefined>,
+    location?: Location,
+  ): {
+    param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
+    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    hash?: [...Hash][number];
+    state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   } {
     const searchParams = urlQueryReplace(location?.search);
     const query = Object.fromEntries([...searchParams]);
