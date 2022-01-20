@@ -365,3 +365,36 @@ it('[parse func.] string type convert to Date type', () => {
   expect(product.parseQuery({ startDate: '2022-03-01' })).not.toEqual({ startDate: '2022-03-01' });
   expect(product.parseQuery({ startDate: '2022-03-01' })).toEqual({ startDate: new Date('2022-03-01') });
 });
+
+it('[parse func] query what required value in build func. can return undefined in case using url website', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.number.required,
+    },
+    typeQuery: {
+      page: typeParser.number.required,
+    },
+  });
+
+  expect(
+    product.parse(
+      { id: '2' },
+      {
+        pathname: '/id/2',
+        search: '',
+        hash: '',
+        state: null,
+      },
+    ),
+  ).toEqual({
+    param: {
+      id: 2,
+    },
+    query: {
+      page: undefined,
+    },
+    hash: '',
+    state: {},
+  });
+});
