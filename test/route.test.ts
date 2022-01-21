@@ -42,14 +42,14 @@ it('[build func.] typeParser optional, required type check', () => {
 
   expect(product.build({ param: { id: 1 } })).toEqual({
     pathname: '/id/1',
-    search: undefined,
-    hash: undefined,
+    search: '',
+    hash: '',
     state: null,
   });
   expect(product.build({ param: { id: 1 }, query: { page: 1, sort: 'L' } })).toEqual({
     pathname: '/id/1',
     search: '?page=1&sort=L',
-    hash: undefined,
+    hash: '',
     state: null,
   });
   expect(product.build({ param: { id: 1 }, query: { page: 1 }, hash: '#ss' })).toEqual({
@@ -124,7 +124,7 @@ it('[build func.] oneOf union type check', () => {
   expect(product.build({ query: { sort: 'L' } })).toEqual({
     pathname: '/id',
     search: '?sort=L',
-    hash: undefined,
+    hash: '',
     state: null,
   });
 });
@@ -160,25 +160,25 @@ it('[build func.] arrayOf return build value check, that using urlQueryReplace f
   expect(product.build({ query: { string: ['1', '2'] } })).toEqual({
     pathname: '/id',
     search: '?string=1&string=2',
-    hash: undefined,
+    hash: '',
     state: null,
   });
   expect(product.build({ query: { number: [1, 2] } })).toEqual({
     pathname: '/id',
     search: '?number=1&number=2',
-    hash: undefined,
+    hash: '',
     state: null,
   });
   expect(product.build({ query: { boolean: [true, false] } })).toEqual({
     pathname: '/id',
     search: '?boolean=true&boolean=false',
-    hash: undefined,
+    hash: '',
     state: null,
   });
   expect(product.build({ query: { date: [new Date('2022-01-13'), new Date('2022-03-13')] } })).toEqual({
     pathname: '/id',
     search: '?date=2022-01-13T00%3A00%3A00.000Z&date=2022-03-13T00%3A00%3A00.000Z',
-    hash: undefined,
+    hash: '',
     state: null,
   });
 });
