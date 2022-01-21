@@ -31,8 +31,8 @@ export function build<Param = null, Query = null, Hash extends string | undefine
   return ({ param, query, hash, state }: { param?: Param; query?: Query; hash?: Hash; state?: State }) => {
     return {
       pathname: param ? `${urlParamReplace(path, convertToString(param, { encode: true }))}` : path,
-      search: query ? `?${urlQueryReplace(convertToString(query))}` : undefined,
-      hash: hash || undefined,
+      search: query ? `?${urlQueryReplace(convertToString(query))}` : '',
+      hash: hash || '',
       state: state || null,
     };
   };
