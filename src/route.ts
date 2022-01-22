@@ -31,8 +31,8 @@ export function build<Param = null, Query = null, Hash extends string | undefine
   return ({ param, query, hash, state }: { param?: Param; query?: Query; hash?: Hash; state?: State }) => {
     return {
       pathname: param ? `${urlParamReplace(path, convertToString(param, { encode: true }))}` : path,
-      search: query ? `?${urlQueryReplace(convertToString(query))}` : undefined,
-      hash: hash || undefined,
+      search: query ? `?${urlQueryReplace(convertToString(query))}` : '',
+      hash: hash || '',
       state: state || null,
     };
   };
@@ -65,7 +65,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
 
   function parseQuery(
     query: Record<string, string | string[] | undefined>,
-  ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] } {
+  ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined } {
     const decodeQuery = convertToDecodeString(query, { decode: true });
     const keyList = (typeQuery && Object.keys(typeQuery)) || [];
 
@@ -101,7 +101,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     location: Location,
   ): {
     param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
-    query: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    query: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined };
     hash: [...Hash][number];
     state: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   };
@@ -110,7 +110,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     location?: Location,
   ): {
     param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
-    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined };
     hash?: [...Hash][number];
     state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   };
@@ -119,7 +119,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     location?: Location,
   ): {
     param: ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] };
-    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] };
+    query?: ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined };
     hash?: [...Hash][number];
     state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   } {
