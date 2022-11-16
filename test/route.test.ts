@@ -32,7 +32,7 @@ it('[build func.] typeParser optional, required type check', () => {
       sort: typeParser.oneOf('L', 'R').optional,
       page: typeParser.number.required,
     },
-    typeHash: ['#ss'],
+    typeHash: ['ss'],
     typeState: {
       a: typeParser.number.required,
       b: typeParser.string.required,
@@ -192,7 +192,7 @@ it('[build func.] encode(param, query) no encode state (only object value)', () 
     typeQuery: {
       sort: typeParser.oneOf("가나다라마바사!@#$%^&*()_+[];',./`=?<>:{}|\\", 'L').optional,
     },
-    typeHash: ['#ss'],
+    typeHash: ['ss'],
     typeState: {
       a: typeParser.arrayOf(transformer.string).required,
     },
@@ -281,7 +281,7 @@ it('[parse func.] string type convert to transformer(func.) return type', () => 
       b: typeParser.string.required,
       c: typeParser.boolean.required,
       d: typeParser.date.required,
-      e: typeParser.oneOf('id', 'sort').required,
+      e: typeParser.oneOf('id', 1, 'sort').required,
       f: typeParser.arrayOf(transformer.number).required,
     },
   });
@@ -296,7 +296,7 @@ it('[parse func.] string type convert to transformer(func.) return type', () => 
   expect(product.parseQuery({ isSort: 'true', isPage: 'false' })).toEqual({});
   expect(() => product.parseQuery({ sort: '2', page: '3' })).toThrow();
 
-  expect(product.parseState({ state: { a: '1', b: '2', c: 'true', d: date, e: 'id', f: ['1', '23'] } })).toEqual({
+  expect(product.parseState({ state: { a: 1, b: '2', c: 'true', d: date, e: 'id', f: [1, 23] } })).toEqual({
     a: 1,
     b: '2',
     c: true,

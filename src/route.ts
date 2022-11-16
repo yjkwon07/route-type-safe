@@ -139,7 +139,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     build: build<
       NotNullReturn<ParseParam, TypeParserReturn<TypeParser<ParseParam>>>,
       NotNullReturn<ParseQuery, TypeParserReturn<TypeParser<ParseQuery>>>,
-      [...Hash][number],
+      `#${[...Hash][number]}`,
       NotNullReturn<ParseState, TypeParserReturn<TypeParser<ParseState>>>
     >(path),
     parse,
