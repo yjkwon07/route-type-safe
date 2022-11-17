@@ -146,6 +146,23 @@ it('[parse func.] oneOf is orderable, 1, "1"(string) => url("1") => 1(number)', 
   });
 });
 
+it('[parse func.] If value is not array type in arrayOf parse, return new array', () => {
+  const product = route({
+    path: '/id',
+    typeQuery: {
+      string: typeParser.arrayOf(transformer.string).optional,
+      number: typeParser.arrayOf(transformer.number).optional,
+      boolean: typeParser.arrayOf(transformer.boolean).optional,
+      date: typeParser.arrayOf(transformer.date).optional,
+    },
+  });
+
+  expect(product.parseQuery({ string: '22' })).toEqual({ string: ['22'] });
+  expect(product.parseQuery({ number: '22' })).toEqual({ number: [22] });
+  expect(product.parseQuery({ boolean: 'true' })).toEqual({ boolean: [true] });
+  expect(product.parseQuery({ date: '2022-01-13T00%3A00%3A00.000Z' })).toEqual({ date: [new Date('2022-01-13')] });
+});
+
 it('[build func.] arrayOf return build value check, that using urlQueryReplace func.', () => {
   const product = route({
     path: '/id',
@@ -157,6 +174,12 @@ it('[build func.] arrayOf return build value check, that using urlQueryReplace f
     },
   });
 
+  expect(product.build({ query: { string: ['1'] } })).toEqual({
+    pathname: '/id',
+    search: '?string=1',
+    hash: '',
+    state: null,
+  });
   expect(product.build({ query: { string: ['1', '2'] } })).toEqual({
     pathname: '/id',
     search: '?string=1&string=2',

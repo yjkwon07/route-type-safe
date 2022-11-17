@@ -30,14 +30,7 @@ type ConvertToString<T> = {
   [P in keyof T]: T[P] extends string | number | boolean | Date[] ? string[] : string;
 };
 
-export const convertToString = <
-  T extends {
-    [s: string]: unknown;
-  },
->(
-  obj: T,
-  option?: { encode: boolean },
-): ConvertToString<T> => {
+export const convertToString = <T>(obj: T, option?: { encode: boolean }): ConvertToString<T> => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (value) {
       if (Array.isArray(value)) {
