@@ -53,7 +53,9 @@ const oneOfTransformer = <T extends (string | number | boolean)[]>(...values: T)
 
 const arrayOfTransformer = <T>(transformer: (value: string) => T) => {
   return (value: string[]): T[] => {
-    return value.map((item) => transformer(item));
+    // if come to one value is not array, didn't return array
+    // absolutely return array if is not array one primary value (except array)
+    return ([].concat(value as any) as string[]).map((item) => transformer(item));
   };
 };
 
