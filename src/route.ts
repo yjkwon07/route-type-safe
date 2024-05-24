@@ -86,10 +86,9 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
 
     return keyList.reduce((acc, key) => {
       acc[key] =
-        location.state &&
-        (location.state as Record<string, any>)[key] &&
-        typeState &&
-        typeState[key as keyof ParseState]?.transformer((location.state as Record<string, any>)[key]);
+        location.state && (location.state as Record<string, any>)[key] && typeState
+          ? typeState[key as keyof ParseState]?.transformer((location.state as Record<string, any>)[key])
+          : undefined;
       return acc;
     }, {} as any);
   }
