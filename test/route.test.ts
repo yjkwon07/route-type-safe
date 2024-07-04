@@ -40,6 +40,12 @@ it('[build func.] typeParser optional, required type check', () => {
     },
   });
 
+  expect(product.build()).toEqual({
+    pathname: '/id/:id',
+    search: '',
+    hash: '',
+    state: null,
+  });
   expect(product.build({ param: { id: 1 } })).toEqual({
     pathname: '/id/1',
     search: '',
@@ -419,5 +425,56 @@ it('[parse func] query what required value in build func. can return undefined i
     },
     hash: '',
     state: {},
+  });
+});
+
+describe('buildPath', () => {
+  const routes = {
+    USER: route({
+      path: '/id',
+      typeQuery: {
+        startDate: typeParser.date.required,
+      },
+    }),
+    MY_POST: route({
+      path: '/feed/my/:active',
+      typeParam: {
+        active: typeParser.oneOf('myPost', 'userPost').required,
+      },
+      typeQuery: { id: typeParser.number.required, matchedId: typeParser.number.required },
+      typeHash: ['section'],
+    }),
+  };
+
+  it('should return the correct path with no parameter', () => {
+    const result = routes.USER.buildPath();
+    expect(result).toBe('/id');
+  });
+
+  it('should return the correct path with param and query', () => {
+    const result = routes.MY_POST.buildPath({ param: { active: 'myPost' }, query: { id: 1, matchedId: 2 } });
+    expect(result).toBe('/feed/my/myPost?id=1&matchedId=2');
+  });
+
+  it('should return the correct path with param, query, and hash', () => {
+    const result = routes.MY_POST.buildPath({
+      param: { active: 'myPost' },
+      query: { id: 1, matchedId: 2 },
+      hash: '#section',
+    });
+    expect(result).toBe('/feed/my/myPost?id=1&matchedId=2#section');
+  });
+
+  it('should return the correct path with param and hash', () => {
+    const result = routes.MY_POST.buildPath({
+      param: { active: 'myPost' },
+      hash: '#section',
+    });
+    expect(result).toBe('/feed/my/myPost#section');
+  });
+
+  it('should handle empty param, query, and hash', () => {
+    const result = routes.MY_POST.buildPath();
+    expect(result).toBe('/feed/my/:active');
   });
 });
