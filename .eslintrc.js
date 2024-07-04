@@ -19,18 +19,27 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   settings: {
-    'import/extensions': ['.js', '.ts'],
+    // https://github.com/import-js/eslint-plugin-import?tab=readme-ov-file#importextensions
+    // This defaults to ['.js'], unless you are using the react shared config, in which case it is specified as ['.js', '.jsx']. Despite the default, if you are using TypeScript (without the plugin:import/typescript config described above) you must specify the new extensions (.ts, and also .tsx if using React).
+    'import/extensions': ['.js','.ts', ],
     'import/parsers': {
+      // https://github.com/import-js/eslint-plugin-import?tab=readme-ov-file#importparsers
+      // This is useful if you're interop-ing with TypeScript directly using webpack
       '@typescript-eslint/parser': ['.ts'],
     },
     'import/resolver': {
-      typescript: {}, // this loads <rootdir>/tsconfig.json to eslint
+      typescript: {
+        project: './tsconfig.json',
+      },
     },
   },
   /* 자바스크립트 버전, 모듈 사용 여부 등을 설정 */
   parserOptions: {
-    parser: '@typescript-eslint/parser', // AST 변환기
-    ecmaVersion: 2018,
+    ecmaVersion: 'latest',
+    ecmaFeatures: {
+      jsx: true,
+    },
+    project: ['tsconfig.json'],
     sourceType: 'module',
   },
   /* extends와 plugins에 대한 세부 설정을 변경 */
@@ -52,7 +61,7 @@ module.exports = {
     'import/order': [
       'error',
       {
-        groups: ['builtin', 'external', 'internal', ['sibling', 'parent'], 'object'],
+        groups: ['builtin', 'external', 'internal', 'sibling', 'parent', 'object'],
         pathGroups: [
           {
             pattern: 'react',

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,16 +13,20 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "incremental": true,
     "declaration": true,
     "outDir": "./dist"
   },
   "include": [
-    "src", "test/**/*",
+    "src",
+    "test/**/*",
+    ".eslintrc.js",
   ],
   "typeRoots": [
     "node_modules/@types",
