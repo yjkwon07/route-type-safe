@@ -20,22 +20,11 @@
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "eslint.options": {
-    "extensions": [
-      ".js",
-      ".ts",
-    ],
-    "validate": [
-      "javascript",
-      "typescript",
-    ]
-  },
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
-  "eslint.alwaysShowStatus": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "never",
     "source.fixAll.eslint": "explicit"
