@@ -25,16 +25,52 @@ type NotNullReturn<T, F> = T extends null ? null : F;
 
 type TypeParser<Parser> = { [P in keyof Parser]: (value: unknown) => Parser[P] };
 
+export function getBuildData<Param = null, Query = null, Hash extends string | undefined = undefined, State = null>({
+  path,
+  param,
+  query,
+  hash,
+  state,
+}: {
+  path: string;
+  param?: Param;
+  query?: Query;
+  hash?: Hash;
+  state?: State;
+}) {
+  return {
+    pathname: param ? `${urlParamReplace(path, convertToString(param, { encode: true }))}` : path,
+    search: query ? `?${urlQueryReplace(convertToString(query))}` : '',
+    hash: hash || '',
+    state: state || null,
+  };
+}
+
 export function build<Param = null, Query = null, Hash extends string | undefined = undefined, State = null>(
   path: string,
 ) {
-  return ({ param, query, hash, state }: { param?: Param; query?: Query; hash?: Hash; state?: State }) => {
-    return {
-      pathname: param ? `${urlParamReplace(path, convertToString(param, { encode: true }))}` : path,
-      search: query ? `?${urlQueryReplace(convertToString(query))}` : '',
-      hash: hash || '',
-      state: state || null,
-    };
+  return (
+    { param, query, hash, state }: { param?: Param; query?: Query; hash?: Hash; state?: State } | undefined = {
+      param: undefined,
+      query: undefined,
+      hash: undefined,
+      state: undefined,
+    },
+  ) => {
+    return getBuildData({ path, param, query, hash, state });
+  };
+}
+
+export function buildPath<Param = null, Query = null, Hash extends string | undefined = undefined>(path: string) {
+  return (
+    { param, query, hash }: { param?: Param; query?: Query; hash?: Hash } | undefined = {
+      param: undefined,
+      query: undefined,
+      hash: undefined,
+    },
+  ) => {
+    const buildData = getBuildData({ path, param, query, hash });
+    return `${buildData.pathname}${buildData.search}${buildData.hash}`;
   };
 }
 
@@ -141,6 +177,11 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
       NotNullReturn<ParseQuery, TypeParserReturn<TypeParser<ParseQuery>>>,
       `#${[...Hash][number]}`,
       NotNullReturn<ParseState, TypeParserReturn<TypeParser<ParseState>>>
+    >(path),
+    buildPath: buildPath<
+      NotNullReturn<ParseParam, TypeParserReturn<TypeParser<ParseParam>>>,
+      NotNullReturn<ParseQuery, TypeParserReturn<TypeParser<ParseQuery>>>,
+      `#${[...Hash][number]}`
     >(path),
     parse,
     parseParam,
