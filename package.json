@@ -9,7 +9,7 @@
   ],
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.mjs",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/src",
     "build": "rimraf dist && rollup -c && yarn copy-dts && tsc -p tsconfig.build.json",
