@@ -27,6 +27,7 @@
     "src",
     "test/**/*",
     ".eslintrc.js",
+    "rollup.config.mjs"
   ],
   "typeRoots": [
     "node_modules/@types",
