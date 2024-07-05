@@ -5,11 +5,14 @@
 node_modules/
 
 # dev
+.rollup.cache
 src
 test
-..eslintignore
-.eslintrc
+.eslintignore
+.eslintrc.js
 .gitignore
 .prettierrc.js
+rollup.config.mjs
+stats.html
 tsconfig.build.json
 tsconfig.json
