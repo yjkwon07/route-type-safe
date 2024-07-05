@@ -112,7 +112,8 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   }
 
   function parseHash(location: { hash: string }): [...Hash][number] {
-    return typeHash ? `#${typeHash.find((hash) => `#${hash}` === location.hash) as [...Hash][number]}` : '';
+    const findHash = typeHash && (typeHash.find((hash) => `#${hash}` === location.hash) as [...Hash][number]);
+    return findHash ? `#${findHash}` : '';
   }
 
   function parseState(location: {
