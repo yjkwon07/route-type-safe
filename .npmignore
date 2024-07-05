@@ -1,0 +1,15 @@
+.github
+.vscode
+
+# npm
+node_modules/
+
+# dev
+src
+test
+..eslintignore
+.eslintrc
+.gitignore
+.prettierrc.js
+tsconfig.build.json
+tsconfig.json
