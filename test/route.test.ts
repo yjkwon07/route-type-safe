@@ -345,7 +345,7 @@ it('[parse func.] using parse func.', () => {
       sort: typeParser.oneOf('L', 'R').optional,
       page: typeParser.number.required,
     },
-    typeHash: ['#ss'],
+    typeHash: ['ss'],
     typeState: {
       a: typeParser.number.required,
       b: typeParser.string.required,
