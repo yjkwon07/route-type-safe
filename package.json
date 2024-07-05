@@ -1,6 +1,6 @@
 {
   "name": "route-type-safe",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "route type safe for page location with pathname, query, hash, state",
   "keywords": [
     "route",
@@ -9,7 +9,7 @@
   ],
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.mjs",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/src",
     "build": "rimraf dist && rollup -c && yarn copy-dts && tsc -p tsconfig.build.json",
