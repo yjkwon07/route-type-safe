@@ -1,7 +1,7 @@
 import { Location } from 'history';
 
 import { SubPartial } from './global';
-import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace } from './helpers';
+import { convertToString, convertToDecodeString, urlQueryReplace, urlParamReplace, searchParamsToObj } from './helpers';
 
 type UseType = string | number | boolean | Date;
 
@@ -161,7 +161,7 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     state?: ParseState extends null ? Record<string, never> : { [P in keyof ParseState]: ParseState[P] };
   } {
     const searchParams = urlQueryReplace(location?.search);
-    const query = Object.fromEntries([...searchParams]);
+    const query = searchParamsToObj(searchParams);
 
     return {
       param: parseParam(param),

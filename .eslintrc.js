@@ -21,7 +21,7 @@ module.exports = {
   settings: {
     // https://github.com/import-js/eslint-plugin-import?tab=readme-ov-file#importextensions
     // This defaults to ['.js'], unless you are using the react shared config, in which case it is specified as ['.js', '.jsx']. Despite the default, if you are using TypeScript (without the plugin:import/typescript config described above) you must specify the new extensions (.ts, and also .tsx if using React).
-    'import/extensions': ['.js','.ts', ],
+    'import/extensions': ['.js', '.ts'],
     'import/parsers': {
       // https://github.com/import-js/eslint-plugin-import?tab=readme-ov-file#importparsers
       // This is useful if you're interop-ing with TypeScript directly using webpack
@@ -98,4 +98,5 @@ module.exports = {
     ],
     'prettier/prettier': ['error'],
   },
+  ignorePatterns: ['jest.config.js'],
 };

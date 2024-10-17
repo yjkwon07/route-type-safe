@@ -163,8 +163,11 @@ it('[parse func.] If value is not array type in arrayOf parse, return new array'
     },
   });
 
+  expect(product.parseQuery({ string: ['22', '33'] })).toEqual({ string: ['22', '33'] });
   expect(product.parseQuery({ string: '22' })).toEqual({ string: ['22'] });
+  expect(product.parseQuery({ number: ['22', '33'] })).toEqual({ number: [22, 33] });
   expect(product.parseQuery({ number: '22' })).toEqual({ number: [22] });
+  expect(product.parseQuery({ boolean: ['true', 'false'] })).toEqual({ boolean: [true, false] });
   expect(product.parseQuery({ boolean: 'true' })).toEqual({ boolean: [true] });
   expect(product.parseQuery({ date: '2022-01-13T00%3A00%3A00.000Z' })).toEqual({ date: [new Date('2022-01-13')] });
 });

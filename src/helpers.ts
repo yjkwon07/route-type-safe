@@ -111,3 +111,21 @@ export function urlQueryReplace(init: URLSearchParamsInit = ''): URLSearchParams
         }, [] as ParamKeyValuePair[]),
   );
 }
+
+export function searchParamsToObj(searchParams: URLSearchParams): {
+  [k: string]: string | string[];
+} {
+  const obj: {
+    [k: string]: string | string[];
+  } = {};
+
+  for (const [key, value] of searchParams) {
+    if (obj[key] !== undefined) {
+      obj[key] = Array.isArray(obj[key]) ? [...obj[key], value] : [obj[key] as string, value];
+    } else {
+      obj[key] = value;
+    }
+  }
+
+  return obj;
+}
