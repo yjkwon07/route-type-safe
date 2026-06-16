@@ -1,6 +1,6 @@
 {
   "name": "route-type-safe",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "route type safe for page location with pathname, query, hash, state",
   "keywords": [
     "route",
