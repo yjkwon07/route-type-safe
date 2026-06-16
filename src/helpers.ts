@@ -35,7 +35,9 @@ export const convertToString = <T extends Record<string, any>>(
   option?: { encode: boolean },
 ): ConvertToString<T> => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (value) {
+    // * `if (value)` 는 0/false/'' 같은 valid 값을 누락시킴.
+    //   nullish 와 빈 문자열만 스킵 — 0/false 는 URL 쿼리에 보존되어야 함.
+    if (value !== undefined && value !== null && value !== '') {
       if (Array.isArray(value)) {
         acc[key] = value.map((v) => {
           if (v instanceof Date) {
@@ -56,7 +58,9 @@ export const convertToDecodeString = (
   option?: { decode: boolean },
 ): Record<string, string[] | string | undefined> => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (value) {
+    // * `if (value)` 는 '0' / 'false' 같은 valid 값을 누락시킴.
+    //   nullish 와 빈 문자열만 스킵.
+    if (value !== undefined && value !== null && value !== '') {
       if (Array.isArray(value)) {
         acc[key] = value.map((v) => {
           return decode(v.toString(), option?.decode);
