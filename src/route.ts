@@ -90,7 +90,9 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   function parseParam(
     param: Record<string, string | undefined>,
   ): ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] } {
-    const decodeParam = convertToDecodeString(param, { decode: true });
+    // * React Router `useParams()` 가 path segment 를 이미 decodeURIComponent 처리. 여기서 또 decode 하면 double-decode.
+    //   → `decode: false` 로 nullish/'' 필터만 적용. raw `%` 포함 값 (예: "5%+100") URIError 방지.
+    const decodeParam = convertToDecodeString(param, { decode: false });
     const keyList = (typeParam && Object.keys(typeParam)) || [];
 
     return keyList.reduce((acc, key) => {
@@ -102,7 +104,9 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
   function parseQuery(
     query: Record<string, string | string[] | undefined>,
   ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined } {
-    const decodeQuery = convertToDecodeString(query, { decode: true });
+    // * URLSearchParams 가 search string 을 이미 decode (위 parse() 의 searchParamsToObj 거침). 여기서 또 decode 하면 double-decode.
+    //   → `decode: false` 로 nullish/'' 필터만 적용. raw `%` 포함 값 (예: JSON `"5%+100"`) URIError 방지.
+    const decodeQuery = convertToDecodeString(query, { decode: false });
     const keyList = (typeQuery && Object.keys(typeQuery)) || [];
 
     return keyList.reduce((acc, key) => {
