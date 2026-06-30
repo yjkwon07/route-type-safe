@@ -89,10 +89,11 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
 }) {
   function parseParam(
     param: Record<string, string | undefined>,
+    options?: { skipDecode?: boolean },
   ): ParseParam extends null ? Record<string, never> : { [P in keyof ParseParam]: ParseParam[P] } {
-    // * React Router `useParams()` 가 path segment 를 이미 decodeURIComponent 처리. 여기서 또 decode 하면 double-decode.
-    //   → `decode: false` 로 nullish/'' 필터만 적용. raw `%` 포함 값 (예: "5%+100") URIError 방지.
-    const decodeParam = convertToDecodeString(param, { decode: false });
+    // standalone 호출 (raw URL-encoded 입력) 은 decode + transform.
+    // parse() 진입점은 React Router 가 이미 decode 한 값을 넘기므로 skipDecode: true 로 double-decode 회피.
+    const decodeParam = convertToDecodeString(param, { decode: !options?.skipDecode });
     const keyList = (typeParam && Object.keys(typeParam)) || [];
 
     return keyList.reduce((acc, key) => {
@@ -103,10 +104,11 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
 
   function parseQuery(
     query: Record<string, string | string[] | undefined>,
+    options?: { skipDecode?: boolean },
   ): ParseQuery extends null ? Record<string, never> : { [P in keyof ParseQuery]: ParseQuery[P] | undefined } {
-    // * URLSearchParams 가 search string 을 이미 decode (위 parse() 의 searchParamsToObj 거침). 여기서 또 decode 하면 double-decode.
-    //   → `decode: false` 로 nullish/'' 필터만 적용. raw `%` 포함 값 (예: JSON `"5%+100"`) URIError 방지.
-    const decodeQuery = convertToDecodeString(query, { decode: false });
+    // standalone 호출 (raw URL-encoded 입력) 은 decode + transform.
+    // parse() 진입점은 URLSearchParams 가 이미 decode 한 값을 넘기므로 skipDecode: true 로 double-decode 회피.
+    const decodeQuery = convertToDecodeString(query, { decode: !options?.skipDecode });
     const keyList = (typeQuery && Object.keys(typeQuery)) || [];
 
     return keyList.reduce((acc, key) => {
@@ -167,9 +169,11 @@ export function route<ParseParam = null, ParseQuery = null, Hash extends string[
     const searchParams = urlQueryReplace(location?.search);
     const query = searchParamsToObj(searchParams);
 
+    // * parse() 의 입력은 이미 decode 된 값 (React Router useParams + URLSearchParams).
+    //   skipDecode: true 로 double-decode (raw `%` 포함 값 URIError) 회피.
     return {
-      param: parseParam(param),
-      query: location && parseQuery(query),
+      param: parseParam(param, { skipDecode: true }),
+      query: location && parseQuery(query, { skipDecode: true }),
       hash: location && parseHash(location),
       state: location && parseState(location),
     };

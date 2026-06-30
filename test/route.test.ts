@@ -383,6 +383,72 @@ it('[parse func.] using parse func.', () => {
   });
 });
 
+it('[parse func.] parse() — URLSearchParams 가 이미 decode 한 값은 skipDecode 로 double-decode 회피 (raw `%` 포함 JSON 안전)', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.string.required,
+    },
+    typeQuery: {
+      data: typeParser.string.optional,
+    },
+  });
+
+  // search 의 data 값: encodeURIComponent('[{"x":"4%"}]') 결과.
+  // URLSearchParams 가 한 번 decode → '[{"x":"4%"}]'. 여기서 또 decodeURIComponent 하면 `%"` invalid escape → URIError.
+  // skipDecode 로 한 번만 decode 되어 정상 통과해야 함.
+  expect(
+    product.parse(
+      { id: '5%2B100' }, // React Router 가 이미 decode 했다고 가정 → '5%+100' 가 입력으로 들어오는 시나리오는 다음 케이스
+      {
+        pathname: '/id/abc',
+        search: '?data=%5B%7B%22x%22%3A%224%25%22%7D%5D',
+        hash: '',
+        state: null,
+      },
+    ),
+  ).toEqual({
+    param: { id: '5%2B100' },
+    query: { data: '[{"x":"4%"}]' },
+    hash: '',
+    state: {},
+  });
+});
+
+it('[parse func.] parseParam(param, { skipDecode: true }) — 이미 decode 된 값 그대로 transform (React Router useParams 시나리오)', () => {
+  const product = route({
+    path: '/id/:id',
+    typeParam: {
+      id: typeParser.string.required,
+    },
+  });
+
+  // 입력: 이미 decode 된 raw 값 (`%` 포함). skipDecode 가 없으면 decodeURIComponent('5%+100') → `%+` invalid → URIError.
+  expect(product.parseParam({ id: '5%+100' }, { skipDecode: true })).toEqual({ id: '5%+100' });
+
+  // skipDecode 기본 (false) 일 때는 decode 시도 → 에러.
+  expect(() => product.parseParam({ id: '5%+100' })).toThrow(URIError);
+});
+
+it('[parse func.] parseQuery(query, { skipDecode: true }) — 이미 decode 된 값 그대로 transform (URLSearchParams 시나리오)', () => {
+  const product = route({
+    path: '/id',
+    typeQuery: {
+      data: typeParser.string.optional,
+      tags: typeParser.arrayOf(transformer.string).optional,
+    },
+  });
+
+  // 단일 + 배열 모두 skipDecode 동작 검증.
+  expect(product.parseQuery({ data: '[{"x":"4%"}]', tags: ['a%b', 'c%d'] }, { skipDecode: true })).toEqual({
+    data: '[{"x":"4%"}]',
+    tags: ['a%b', 'c%d'],
+  });
+
+  // skipDecode 기본 (false) 일 때는 decode 시도 → 에러.
+  expect(() => product.parseQuery({ data: '[{"x":"4%"}]' })).toThrow(URIError);
+});
+
 it('[parse func.] string type convert to Date type', () => {
   const product = route({
     path: '/id',
